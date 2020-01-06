@@ -5,7 +5,7 @@ const awsmobile = {
     "aws_cloud_logic_custom": [
         {
             "name": "iformapi",
-            "endpoint": "https://h10xrszoge.execute-api.us-east-1.amazonaws.com/dev",
+            "endpoint": "https://6ma8zovr1d.execute-api.us-east-1.amazonaws.com/dev/iform",
             "region": "us-east-1"
         }
     ]
