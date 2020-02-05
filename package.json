@@ -10,7 +10,6 @@
   "author": "Sze Wong",
   "license": "MIT",
   "peerDependencies": {
-    "aws-amplify": "^2.2.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   },

@@ -18,7 +18,10 @@ function App() {
   return (.....);
 }
 
-const config = { servername: "loadapp" }
+const ifbConfig = { 
+	servername: "loadapp",
+	apiKey: "XXXXXXX
+ }
 
 export default withAuthenticator(App, ifbConfig);
 ```
@@ -29,19 +32,19 @@ Using API calls:
 ```
 import { IformRequest } from 'iformauth-react';
 
-IformRequest.get('profiles/10845/pages/290817343/records/10')
+IformRequest.get('/v60/profiles/10845/pages/290817343/records/10')
 	.then(res=>{...})
 	.catch(err=>{...})
 
-IformRequest.put('profiles/10845/pages/290817343/records/10', body)
+IformRequest.put('/v60/profiles/10845/pages/290817343/records/10', body)
 	.then(res=>{...})
 	.catch(err=>{...})
 
-IformRequest.post('profiles/10845/pages/290817343/records', body)
+IformRequest.post('/v60/profiles/10845/pages/290817343/records', body)
 	.then(res=>{...})
 	.catch(err=>{...})
 
-IformRequest.delete('profiles/10845/pages/290817343/records/10')
+IformRequest.delete('/v60/profiles/10845/pages/290817343/records/10')
 	.then(res=>{...})
 	.catch(err=>{...})
 ```
