@@ -20,7 +20,7 @@ function App() {
 
 const ifbConfig = { 
 	servername: "loadapp",
-	apiKey: "XXXXXXX
+	apiKey: "XXXXXXX"
  }
 
 export default withAuthenticator(App, ifbConfig);
