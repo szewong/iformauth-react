@@ -2,6 +2,8 @@
 
 var iformConfig = {
     endpoint: "https://iformapi.zerionconsulting.com/iform",
+    iform_env: "iformbuilder",
+    IFORM_ENV_KEY: "iform_env",
     ACCESSTOKEN_KEY: "iform_token",
     ACCESSTOKEN_EXP_KEY: "iform_token_exp",
     SERVERNAME_KEY: "iform_servername",

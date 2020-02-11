@@ -9,7 +9,7 @@ const _removeLocal = (key)=>{ window.localStorage.removeItem(key) }
 const _token = (code)=>{
     const redirect_uri = _getLocal(iformConfig.REDIRECT_KEY);
     const body = { code: code, redirect_uri: redirect_uri};
-    _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/token`, method:'post',body: body})
+    _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/token`, method:'post',body: body})
     .then (response => {
          if (response.token){
             _setLocal(iformConfig.ACCESSTOKEN_KEY, response.token.access_token)
@@ -23,7 +23,7 @@ const _token = (code)=>{
 
 const _authenticate = ()=>{
     const redirect_uri = _getLocal(iformConfig.REDIRECT_KEY);
-    _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/authenticate?redirect_uri=${redirect_uri}`, method: 'get'})
+    _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/authenticate?redirect_uri=${redirect_uri}`, method: 'get'})
     .then (response => {
         if (response.redirect_url) return window.location.href = response.redirect_url;
     }).catch(error => {
@@ -46,6 +46,19 @@ const _isAuthenticated  = () => {
     if (code) _token(code);
     else _authenticate();
     return false;
+}
+
+const _logout = () => {
+    _removeLocal(iformConfig.ACCESSTOKEN_EXP_KEY);
+    _removeLocal(iformConfig.ACCESSTOKEN_KEY);
+    const redirect_uri = _getLocal(iformConfig.REDIRECT_KEY);
+    _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/logout?redirect_uri=${redirect_uri}`, method: 'get'})
+    .then (response => {
+        if (response.redirect_url) return window.location.href = response.redirect_url;
+    }).catch(error => {
+        console.log(error)
+    })
+
 }
 
 const _sendAPI =  (path, method, body)=>{
@@ -91,22 +104,25 @@ const _sendInternal = (option)=>{
 const IformRequest  = {
     isAuthenticated: _isAuthenticated,
 
+    logout: _logout,
+
     send: (option) => _sendInternal(option),
 
-    get: (path)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'get'}),
+    get: (path)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'get'}),
 
-    post: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'post', body: body}),
+    post: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'post', body: body}),
     
-    put: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'put', body: body}),
+    put: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'put', body: body}),
 
-    delete: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'delete', body: body}),
+    delete: (path, body)=> _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/api${(path[0]!="/"?"/":"")}${path}`, method: 'delete', body: body}),
 
     configure: (config)=>{
-        let {servername, redirect_uri, apiKey} = config;
+        let {servername, iform_env, redirect_uri, apiKey} = config;
         if(!servername) throw new Error('Property "servername" is required');    
         if(!apiKey) throw new Error('Property "apiKey" is required');    
         if(!redirect_uri) redirect_uri = window.location.href.split("?")[0];
         config.redirect_uri = redirect_uri;
+        _setLocal(iformConfig.IFORM_ENV_KEY, (iform_env?iform_env:iformConfig.iform_env));
         _setLocal(iformConfig.SERVERNAME_KEY, servername);
         _setLocal(iformConfig.REDIRECT_KEY, redirect_uri);
         _setLocal(iformConfig.API_KEY, apiKey);
