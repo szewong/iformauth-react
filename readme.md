@@ -21,6 +21,8 @@ function App() {
 const ifbConfig = { 
 	servername: "loadapp",
 	apiKey: "XXXXXXX"
+	iform_env: "(OPTIONAL)iformbuilder",
+	redirect_uri: "(OPTIONAL)"	
  }
 
 export default withAuthenticator(App, ifbConfig);
