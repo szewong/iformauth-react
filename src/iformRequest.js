@@ -49,12 +49,29 @@ const _isAuthenticated  = () => {
 }
 
 const _logout = () => {
-    _removeLocal(iformConfig.ACCESSTOKEN_EXP_KEY);
-    _removeLocal(iformConfig.ACCESSTOKEN_KEY);
+    const dualScreenLeft = window.screenLeft || window.screenX;
+    const dualScreenTop = window.screenTop  || window.screenY;
+
+    const width =  window.innerWidth || document.documentElement.clientWidth;
+    const height = window.innerHeight || document.documentElement.clientHeight;
+
+    const systemZoom = width / window.screen.availWidth;
+    const left = (width - 630) / 2 / systemZoom + dualScreenLeft
+    const top = (height - 330) / 2 / systemZoom + dualScreenTop
+
     const redirect_uri = _getLocal(iformConfig.REDIRECT_KEY);
     _sendInternal({path: `/${_getLocal(iformConfig.SERVERNAME_KEY)}/${_getLocal(iformConfig.IFORM_ENV_KEY)}/logout?redirect_uri=${redirect_uri}`, method: 'get'})
     .then (response => {
-        if (response.redirect_url) return window.location.href = response.redirect_url;
+        if (response.redirect_url){
+            let myWindow = window.open(response.redirect_url, "", `width=${630/systemZoom},height=${330/systemZoom},top=${top},left=${left}`);
+               myWindow.focus();
+            setTimeout(function() {
+                _removeLocal(iformConfig.ACCESSTOKEN_EXP_KEY);
+                _removeLocal(iformConfig.ACCESSTOKEN_KEY);
+                myWindow.close();
+                window.location.href = window.location.origin;
+            }, 800);
+        }
     }).catch(error => {
         console.log(error)
     })
