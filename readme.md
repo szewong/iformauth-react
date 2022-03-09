@@ -12,7 +12,7 @@ npm install iformauth-react
 In App.js
 
 ```
-{ withAuthenticator } from 'iformauth-react'
+import { withAuthenticator } from 'iformauth-react'
 
 function App() {
   return (.....);
